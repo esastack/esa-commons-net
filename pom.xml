@@ -18,17 +18,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.esastack</groupId>
-    <artifactId>commons-networking</artifactId>
+    <artifactId>commons-net</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>networking-http</module>
-        <module>networking-netty</module>
+        <module>commons-net-core</module>
+        <module>commons-net-netty</module>
     </modules>
 
-    <name>Commons Networking</name>
+    <name>Commons Net</name>
     <description>
-        ESA Commons Networking is the common lib of Networking.
+        ESA Commons Net is the common lib of Networking.
     </description>
     <url>https://www.esastack.io/</url>
 
