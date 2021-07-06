@@ -17,25 +17,14 @@ package io.esastack.commons.net.buffer;
 
 import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
-import io.esastack.commons.net.BufferFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Unity class of {@link Buffer}.
  */
 public final class Buffers {
-
-    private static final BufferFactory FACTORY;
-
-    static {
-        List<BufferFactory> factories = SpiLoader.cached(BufferFactory.class).getAll();
-        if (factories.isEmpty()) {
-            FACTORY = null;
-        } else {
-            FACTORY = factories.get(0);
-        }
-    }
 
     /**
      * Obtains a {@link Buffer} which is always empty.
@@ -44,7 +33,7 @@ public final class Buffers {
      */
     public static Buffer empty() {
         checkStatus();
-        return FACTORY.empty();
+        return PROVIDER.empty();
     }
 
     /**
@@ -54,7 +43,7 @@ public final class Buffers {
      */
     public static Buffer buffer() {
         checkStatus();
-        return FACTORY.buffer();
+        return PROVIDER.buffer();
     }
 
     /**
@@ -66,7 +55,7 @@ public final class Buffers {
      */
     public static Buffer buffer(int initialCapacity) {
         checkStatus();
-        return FACTORY.buffer(initialCapacity);
+        return PROVIDER.buffer(initialCapacity);
     }
 
     /**
@@ -78,7 +67,7 @@ public final class Buffers {
      */
     public static Buffer buffer(int initialCapacity, int maxCapacity) {
         checkStatus();
-        return FACTORY.buffer(initialCapacity, maxCapacity);
+        return PROVIDER.buffer(initialCapacity, maxCapacity);
     }
 
     /**
@@ -90,7 +79,7 @@ public final class Buffers {
      */
     public static Buffer buffer(byte[] src) {
         checkStatus();
-        return FACTORY.buffer(src);
+        return PROVIDER.buffer(src);
     }
 
     /**
@@ -104,7 +93,7 @@ public final class Buffers {
      */
     public static Buffer buffer(byte[] src, int off, int len) {
         checkStatus();
-        return FACTORY.buffer(src, off, len);
+        return PROVIDER.buffer(src, off, len);
     }
 
     /**
@@ -115,11 +104,33 @@ public final class Buffers {
      */
     public static Buffer wrap(Object buffer) {
         checkStatus();
-        return FACTORY.wrap(buffer).orElse(null);
+        return PROVIDER.wrap(buffer).orElse(null);
+    }
+
+    /**
+     * Obtains the underlying object of the given {@code buffer}.
+     *
+     * @return  if the underlying {@link Object} is present, then it will be returned, otherwise a empty will
+     * be returned.
+     */
+    public static Optional<Object> unwrap(Buffer buffer) {
+        checkStatus();
+        return PROVIDER.unwrap(buffer);
+    }
+
+    private static final BufferProvider PROVIDER;
+
+    static {
+        List<BufferProvider> providers = SpiLoader.cached(BufferProvider.class).getAll();
+        if (providers.isEmpty()) {
+            PROVIDER = null;
+        } else {
+            PROVIDER = providers.get(0);
+        }
     }
 
     private static void checkStatus() {
-        Checks.checkArg(FACTORY != null, "factory is null");
+        Checks.checkArg(PROVIDER != null, "provider is null");
     }
 
     private Buffers() {

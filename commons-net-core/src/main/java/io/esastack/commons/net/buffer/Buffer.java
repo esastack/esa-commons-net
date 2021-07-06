@@ -15,10 +15,8 @@
  */
 package io.esastack.commons.net.buffer;
 
-
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Optional;
 
 /**
  * A buffer is designed to store bytes.
@@ -490,16 +488,6 @@ public interface Buffer {
      * @return copied buffer
      */
     Buffer copy();
-
-    /**
-     * Obtains the underlying object of the given {@code buffer}.
-     *
-     * @return  if the underlying {@link Object} is present, then it will be returned, otherwise a empty will
-     * be returned.
-     */
-    default Optional<Object> unwrap() {
-        return Optional.empty();
-    }
 
     /**
      * Decodes this buffer's readable bytes into a string with the specified character set name.  This method is

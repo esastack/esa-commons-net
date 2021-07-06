@@ -339,9 +339,8 @@ public class BufferImpl implements Buffer {
      *
      * @return underlying netty based buffer.
      */
-    @Override
-    public Optional<Object> unwrap() {
-        return Optional.ofNullable(underlying);
+    Optional<Object> unwrap() {
+        return Optional.of(underlying);
     }
 
     @Override

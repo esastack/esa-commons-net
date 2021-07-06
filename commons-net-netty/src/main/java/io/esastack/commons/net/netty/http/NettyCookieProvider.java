@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.netty;
+package io.esastack.commons.net.netty.http;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.commons.net.CookieFactory;
 import io.esastack.commons.net.http.Cookie;
-import io.esastack.commons.net.netty.http.CookieImpl;
+import io.esastack.commons.net.http.CookieProvider;
 
 import java.util.Optional;
 
 @Internal
 @Feature(order = -1000)
-public class NettyCookieFactory implements CookieFactory {
+public class NettyCookieProvider implements CookieProvider {
 
     @Override
     public Cookie create(String name, String value) {
@@ -41,5 +40,13 @@ public class NettyCookieFactory implements CookieFactory {
         }
     }
 
+    @Override
+    public Optional<Object> unwrap(Cookie cookie) {
+        if (cookie instanceof CookieImpl) {
+            return ((CookieImpl) cookie).unwrap();
+        } else {
+            return Optional.empty();
+        }
+    }
 }
 

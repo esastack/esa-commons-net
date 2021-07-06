@@ -17,22 +17,11 @@ package io.esastack.commons.net.http;
 
 import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
-import io.esastack.commons.net.CookieFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class Cookies {
-
-    private static final CookieFactory FACTORY;
-
-    static {
-        List<CookieFactory> factories = SpiLoader.cached(CookieFactory.class).getAll();
-        if (factories.isEmpty()) {
-            FACTORY = null;
-        } else {
-            FACTORY = factories.get(0);
-        }
-    }
 
     /**
      * Creates a {@link Cookie} by given {@code name} and {@code value}.
@@ -43,7 +32,7 @@ public final class Cookies {
      */
     public static Cookie cookie(String name, String value) {
         checkStatus();
-        return FACTORY.create(name, value);
+        return PROVIDER.create(name, value);
     }
 
     /**
@@ -54,11 +43,33 @@ public final class Cookies {
      */
     public static Cookie wrap(Object cookie) {
         checkStatus();
-        return FACTORY.wrap(cookie).orElse(null);
+        return PROVIDER.wrap(cookie).orElse(null);
+    }
+
+    /**
+     * Unwraps the given {@code cookie}.
+     *
+     * @param cookie    cookie
+     * @return  object
+     */
+    public static Optional<Object> unwrap(Cookie cookie) {
+        checkStatus();
+        return PROVIDER.unwrap(cookie);
+    }
+
+    private static final CookieProvider PROVIDER;
+
+    static {
+        List<CookieProvider> providers = SpiLoader.cached(CookieProvider.class).getAll();
+        if (providers.isEmpty()) {
+            PROVIDER = null;
+        } else {
+            PROVIDER = providers.get(0);
+        }
     }
 
     private static void checkStatus() {
-        Checks.checkArg(FACTORY != null, "factory is null");
+        Checks.checkArg(PROVIDER != null, "provider is null");
     }
 
     private Cookies() {

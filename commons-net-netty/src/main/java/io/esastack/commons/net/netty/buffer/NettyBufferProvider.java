@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.netty;
+package io.esastack.commons.net.netty.buffer;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
-import io.esastack.commons.net.BufferFactory;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.netty.buffer.BufferImpl;
+import io.esastack.commons.net.buffer.BufferProvider;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -27,7 +26,7 @@ import java.util.Optional;
 
 @Internal
 @Feature(order = -1000)
-public class NettyBufferFactory implements BufferFactory {
+public class NettyBufferProvider implements BufferProvider {
 
     @Override
     public Buffer empty() {
@@ -63,6 +62,15 @@ public class NettyBufferFactory implements BufferFactory {
     public Optional<Buffer> wrap(Object buffer) {
         if (buffer instanceof ByteBuf) {
             return Optional.of(new BufferImpl((ByteBuf) buffer));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Object> unwrap(Buffer buffer) {
+        if (buffer instanceof BufferImpl) {
+            return ((BufferImpl) buffer).unwrap();
         } else {
             return Optional.empty();
         }

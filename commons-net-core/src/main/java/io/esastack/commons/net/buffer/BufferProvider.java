@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net;
+package io.esastack.commons.net.buffer;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
-import io.esastack.commons.net.buffer.Buffer;
 
 import java.util.Optional;
 
 /**
- * A factory to create {@link io.esastack.commons.net.buffer.Buffer}.
+ * A provider to create {@link io.esastack.commons.net.buffer.Buffer}.
  */
 @SPI
 @Internal
-public interface BufferFactory {
+public interface BufferProvider {
 
     /**
      * Creates an {@link Buffer} which is always empty.
@@ -84,6 +83,14 @@ public interface BufferFactory {
      * @return  buffer
      */
     Optional<Buffer> wrap(Object buffer);
+
+    /**
+     * Try to unwrap the {@code buffer}.
+     *
+     * @param buffer    buffer
+     * @return  object
+     */
+    Optional<Object> unwrap(Buffer buffer);
 
 }
 

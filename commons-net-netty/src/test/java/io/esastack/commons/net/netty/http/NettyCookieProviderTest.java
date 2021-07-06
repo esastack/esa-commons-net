@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.netty;
+package io.esastack.commons.net.netty.http;
 
 import io.esastack.commons.net.http.Cookie;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
@@ -27,34 +27,46 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class NettyCookieFactoryTest {
+class NettyCookieProviderTest {
 
     @Test
     void testCreate() {
-        final NettyCookieFactory factory = new NettyCookieFactory();
-        final Cookie cookie = factory.create("a", "b");
+        final NettyCookieProvider provider = new NettyCookieProvider();
+        final Cookie cookie = provider.create("a", "b");
         assertNotNull(cookie);
         assertEquals("a", cookie.name());
         assertEquals("b", cookie.value());
 
-        assertThrows(NullPointerException.class, () -> factory.create(null, "B"));
-        assertThrows(IllegalArgumentException.class, () -> factory.create("", "B"));
-        assertThrows(NullPointerException.class, () -> factory.create("a", null));
+        assertThrows(NullPointerException.class, () -> provider.create(null, "B"));
+        assertThrows(IllegalArgumentException.class, () -> provider.create("", "B"));
+        assertThrows(NullPointerException.class, () -> provider.create("a", null));
     }
 
     @Test
     void testWrap() {
-        final NettyCookieFactory factory = new NettyCookieFactory();
-        final Optional<Cookie> cookie0 = factory.wrap(null);
+        final NettyCookieProvider provider = new NettyCookieProvider();
+        final Optional<Cookie> cookie0 = provider.wrap(null);
         assertFalse(cookie0.isPresent());
 
-        final Optional<Cookie> cookie1 = factory.wrap(new Object());
+        final Optional<Cookie> cookie1 = provider.wrap(new Object());
         assertFalse(cookie1.isPresent());
 
-        final Optional<Cookie> cookie2 = factory.wrap(new DefaultCookie("a", "b"));
+        final Optional<Cookie> cookie2 = provider.wrap(new DefaultCookie("a", "b"));
         assertTrue(cookie2.isPresent());
         assertEquals("a", cookie2.get().name());
         assertEquals("b", cookie2.get().value());
+    }
+
+    @Test
+    void testUnwrap() {
+        final NettyCookieProvider provider = new NettyCookieProvider();
+        final Cookie cookie = provider.create("a", "b");
+
+        final Optional<Object> unwrapped = provider.unwrap(cookie);
+        assertTrue(unwrapped.isPresent());
+        assertTrue(unwrapped.get() instanceof io.netty.handler.codec.http.cookie.Cookie);
+
+        assertFalse(provider.unwrap(null).isPresent());
     }
 }
 

@@ -21,6 +21,8 @@ import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
+import java.util.Optional;
+
 /**
  * Implementation of {@link Cookie} that delegates the {@link io.netty.handler.codec.http.cookie.Cookie}.
  */
@@ -119,6 +121,10 @@ public class CookieImpl implements Cookie {
         } else {
             return ClientCookieEncoder.STRICT.encode(cookie);
         }
+    }
+
+    Optional<Object> unwrap() {
+        return Optional.of(cookie);
     }
 
 }
