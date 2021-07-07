@@ -1,2 +1,2 @@
-# commons-networking
-common lib of networking interfaces 
+# commons-net
+common lib of net interfaces
