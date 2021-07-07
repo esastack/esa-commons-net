@@ -19,12 +19,11 @@ import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Unity class of {@link Buffer}.
  */
-public final class Buffers {
+public final class BufferUtil {
 
     /**
      * Obtains a {@link Buffer} which is always empty.
@@ -56,18 +55,6 @@ public final class Buffers {
     public static Buffer buffer(int initialCapacity) {
         checkStatus();
         return PROVIDER.buffer(initialCapacity);
-    }
-
-    /**
-     * Creates a new, empty buffer using specified initial size and max capacity.
-     *
-     * @param initialCapacity initial size
-     *
-     * @return buffer
-     */
-    public static Buffer buffer(int initialCapacity, int maxCapacity) {
-        checkStatus();
-        return PROVIDER.buffer(initialCapacity, maxCapacity);
     }
 
     /**
@@ -110,12 +97,12 @@ public final class Buffers {
     /**
      * Obtains the underlying object of the given {@code buffer}.
      *
-     * @return  if the underlying {@link Object} is present, then it will be returned, otherwise a empty will
-     * be returned.
+     * @return  if the underlying {@link Object} is present, then it will be returned, otherwise {@code null}
+     * will be returned.
      */
-    public static Optional<Object> unwrap(Buffer buffer) {
+    public static Object unwrap(Buffer buffer) {
         checkStatus();
-        return PROVIDER.unwrap(buffer);
+        return PROVIDER.unwrap(buffer).orElse(null);
     }
 
     private static final BufferProvider PROVIDER;
@@ -133,7 +120,7 @@ public final class Buffers {
         Checks.checkArg(PROVIDER != null, "provider is null");
     }
 
-    private Buffers() {
+    private BufferUtil() {
     }
 
 }

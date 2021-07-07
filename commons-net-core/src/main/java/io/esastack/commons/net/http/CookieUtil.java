@@ -19,9 +19,8 @@ import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
 
 import java.util.List;
-import java.util.Optional;
 
-public final class Cookies {
+public final class CookieUtil {
 
     /**
      * Creates a {@link Cookie} by given {@code name} and {@code value}.
@@ -50,11 +49,11 @@ public final class Cookies {
      * Unwraps the given {@code cookie}.
      *
      * @param cookie    cookie
-     * @return  object
+     * @return  object, which may be null.
      */
-    public static Optional<Object> unwrap(Cookie cookie) {
+    public static Object unwrap(Cookie cookie) {
         checkStatus();
-        return PROVIDER.unwrap(cookie);
+        return PROVIDER.unwrap(cookie).orElse(null);
     }
 
     private static final CookieProvider PROVIDER;
@@ -72,7 +71,7 @@ public final class Cookies {
         Checks.checkArg(PROVIDER != null, "provider is null");
     }
 
-    private Cookies() {
+    private CookieUtil() {
     }
 
 }
