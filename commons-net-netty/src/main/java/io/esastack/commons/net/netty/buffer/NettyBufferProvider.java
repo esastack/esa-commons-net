@@ -44,11 +44,6 @@ public class NettyBufferProvider implements BufferProvider {
     }
 
     @Override
-    public Buffer buffer(int initialCapacity, int maxCapacity) {
-        return new BufferImpl(initialCapacity, maxCapacity);
-    }
-
-    @Override
     public Buffer buffer(byte[] src) {
         return new BufferImpl(Unpooled.wrappedBuffer(src));
     }

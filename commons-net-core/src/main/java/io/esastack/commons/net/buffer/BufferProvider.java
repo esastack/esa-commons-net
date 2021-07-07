@@ -50,15 +50,6 @@ public interface BufferProvider {
     Buffer buffer(int initialCapacity);
 
     /**
-     * Creates an {@link Buffer} with given {@code initialCapacity} and {@code maxCapacity}.
-     *
-     * @param initialCapacity   initial capacity
-     * @param maxCapacity   max capacity
-     * @return  buffer
-     */
-    Buffer buffer(int initialCapacity, int maxCapacity);
-
-    /**
      * Creates an {@link Buffer} by given {@code src}.
      *
      * @param src   src

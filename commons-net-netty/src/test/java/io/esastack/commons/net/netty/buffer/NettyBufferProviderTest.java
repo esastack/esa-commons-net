@@ -50,13 +50,6 @@ class NettyBufferProviderTest {
         assertTrue(unwrapped1.isPresent());
         assertTrue(((ByteBuf) unwrapped1.get()).hasArray());
         assertEquals(1, buffer1.capacity());
-
-        final Buffer buffer2 = provider.buffer(1, 2);
-        final Optional<Object> unwrapped2 = provider.unwrap(buffer2);
-        assertTrue(unwrapped2.isPresent());
-        assertTrue(((ByteBuf) unwrapped2.get()).hasArray());
-        assertEquals(1, buffer2.capacity());
-        assertEquals(2, ((ByteBuf) unwrapped2.get()).maxCapacity());
     }
 
     @Test
