@@ -18,11 +18,13 @@ package io.esastack.commons.net.http;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -77,6 +79,7 @@ class MediaTypeUtilTest {
 
     @Test
     void testValuesOf() {
+        assertDoesNotThrow(() -> MediaTypeUtil.valuesOf(null, null));
         final List<MediaType> target = new LinkedList<>();
 
         MediaTypeUtil.valuesOf("", target);
@@ -112,15 +115,32 @@ class MediaTypeUtilTest {
 
     @Test
     void testSortBySpecificityAndQuality() {
+        assertThrows(NullPointerException.class, () -> MediaTypeUtil.sortBySpecificityAndQuality(null));
         final List<MediaType> types = new LinkedList<>();
-        types.add(MediaTypeUtil.ALL);
-        types.add(MediaTypeUtil.of("text"));
-        types.add(MediaTypeUtil.TEXT_HTML);
+        final MediaType mediaType0 = MediaTypeUtil.ALL;
+        types.add(mediaType0);
+        MediaTypeUtil.sortBySpecificityAndQuality(types);
+        assertEquals(1, types.size());
+
+        final MediaType mediaType1 = MediaTypeUtil.of("text");
+        final MediaType mediaType2 = MediaTypeUtil.TEXT_HTML;
+        final MediaType mediaType3 = MediaTypeUtil.of("application", "json",
+                Collections.singletonMap(MediaTypeUtil.Q_VALUE, "0.5"));
+        final MediaType mediaType4 = MediaTypeUtil.of("foo", "bar",
+                Collections.singletonMap(MediaTypeUtil.Q_VALUE, "0.7"));
 
         MediaTypeUtil.sortBySpecificityAndQuality(types);
-        assertEquals(MediaTypeUtil.TEXT_HTML, types.get(0));
-        assertEquals(MediaTypeUtil.of("text"), types.get(1));
-        assertEquals(MediaTypeUtil.ALL, types.get(2));
+        types.add(mediaType1);
+        types.add(mediaType2);
+        types.add(mediaType3);
+        types.add(mediaType4);
+
+        MediaTypeUtil.sortBySpecificityAndQuality(types);
+        assertSame(mediaType2, types.get(0));
+        assertSame(mediaType1, types.get(1));
+        assertSame(mediaType4, types.get(2));
+        assertSame(mediaType3, types.get(3));
+        assertSame(mediaType0, types.get(4));
     }
 
     @Test
