@@ -15,6 +15,7 @@
  */
 package io.esastack.commons.net.netty.http;
 
+import io.esastack.commons.net.http.EmptyHttpHeaders;
 import io.esastack.commons.net.http.HttpHeaders;
 import io.netty.handler.codec.DefaultHeaders;
 import io.netty.handler.codec.http.DefaultHttpHeaders;

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.netty.http;
+package io.esastack.commons.net.http;
 
-import io.esastack.commons.net.http.HttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
