@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.netty.http;
-
-import io.esastack.commons.net.http.HttpHeaders;
-import io.netty.handler.codec.HeadersUtils;
+package io.esastack.commons.net.http;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -348,6 +345,6 @@ public final class EmptyHttpHeaders implements HttpHeaders {
 
     @Override
     public String toString() {
-        return HeadersUtils.toString(getClass(), iteratorCharSequence(), size());
+        return getClass().getSimpleName() + "[]";
     }
 }
