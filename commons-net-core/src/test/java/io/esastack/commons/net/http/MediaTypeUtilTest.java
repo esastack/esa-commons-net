@@ -29,21 +29,21 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MediaTypesTest {
+class MediaTypeUtilTest {
 
     @Test
     void testOf() {
-        final MediaType type0 = MediaTypes.of("application");
+        final MediaType type0 = MediaTypeUtil.of("application");
         assertEquals("application", type0.type());
         assertEquals("*", type0.subtype());
         assertTrue(type0.params().isEmpty());
 
-        final MediaType type1 = MediaTypes.of("application", "jsonp");
+        final MediaType type1 = MediaTypeUtil.of("application", "jsonp");
         assertEquals("application", type1.type());
         assertEquals("jsonp", type1.subtype());
         assertTrue(type1.params().isEmpty());
 
-        final MediaType type2 = MediaTypes.of("text", "plain", StandardCharsets.UTF_8);
+        final MediaType type2 = MediaTypeUtil.of("text", "plain", StandardCharsets.UTF_8);
         assertEquals("text", type2.type());
         assertEquals("plain", type2.subtype());
         assertEquals(1, type2.params().size());
@@ -52,7 +52,7 @@ class MediaTypesTest {
         final Map<String, String> params = new LinkedHashMap<>(1);
         params.put("a", "b");
         params.put("x", "y");
-        final MediaType type3 = MediaTypes.of("*", "*", params);
+        final MediaType type3 = MediaTypeUtil.of("*", "*", params);
         assertEquals("*", type3.type());
         assertEquals("*", type3.subtype());
         assertEquals(2, type3.params().size());
@@ -62,13 +62,13 @@ class MediaTypesTest {
 
     @Test
     void testValueOf() {
-        final MediaType type0 = MediaTypes.valueOf("application/json;charset=utf-8");
-        assertEquals(MediaTypes.APPLICATION_JSON_UTF8, type0);
-        assertThrows(IllegalArgumentException.class, () -> MediaTypes.valueOf("xx,"));
+        final MediaType type0 = MediaTypeUtil.valueOf("application/json;charset=utf-8");
+        assertEquals(MediaTypeUtil.APPLICATION_JSON_UTF8, type0);
+        assertThrows(IllegalArgumentException.class, () -> MediaTypeUtil.valueOf("xx,"));
 
-        final List<MediaType> types1 = new LinkedList<>(MediaTypes
+        final List<MediaType> types1 = new LinkedList<>(MediaTypeUtil
                 .valuesOf("application/json, text/plain;a=b;c=d"));
-        assertEquals(MediaTypes.APPLICATION_JSON, types1.get(0));
+        assertEquals(MediaTypeUtil.APPLICATION_JSON, types1.get(0));
         assertEquals("text", types1.get(1).type());
         assertEquals("plain", types1.get(1).subtype());
         assertEquals("b", types1.get(1).param("a"));
@@ -79,11 +79,11 @@ class MediaTypesTest {
     void testValuesOf() {
         final List<MediaType> target = new LinkedList<>();
 
-        MediaTypes.valuesOf("", target);
+        MediaTypeUtil.valuesOf("", target);
         assertTrue(target.isEmpty());
 
-        MediaTypes.valuesOf("application/json, text/plain;a=b;c=d", target);
-        assertEquals(MediaTypes.APPLICATION_JSON, target.get(0));
+        MediaTypeUtil.valuesOf("application/json, text/plain;a=b;c=d", target);
+        assertEquals(MediaTypeUtil.APPLICATION_JSON, target.get(0));
         assertEquals("text", target.get(1).type());
         assertEquals("plain", target.get(1).subtype());
         assertEquals("b", target.get(1).param("a"));
@@ -92,9 +92,9 @@ class MediaTypesTest {
 
     @Test
     void testParseMediaType() {
-        assertThrows(IllegalArgumentException.class, () -> MediaTypes.parseMediaType(""));
+        assertThrows(IllegalArgumentException.class, () -> MediaTypeUtil.parseMediaType(""));
 
-        final MediaType type0 = MediaTypes.parseMediaType("application/octet-stream");
+        final MediaType type0 = MediaTypeUtil.parseMediaType("application/octet-stream");
         assertEquals("application", type0.type());
         assertEquals("octet-stream", type0.subtype());
         assertTrue(type0.params().isEmpty());
@@ -102,34 +102,34 @@ class MediaTypesTest {
 
     @Test
     void testParseTypes() {
-        assertTrue(MediaTypes.parseMediaTypes("").isEmpty());
+        assertTrue(MediaTypeUtil.parseMediaTypes("").isEmpty());
 
-        final List<MediaType> types = new LinkedList<>(MediaTypes.parseMediaTypes("*/*, text/plain"));
+        final List<MediaType> types = new LinkedList<>(MediaTypeUtil.parseMediaTypes("*/*, text/plain"));
         assertEquals(2, types.size());
-        assertEquals(MediaTypes.ALL, types.get(0));
-        assertEquals(MediaTypes.TEXT_PLAIN, types.get(1));
+        assertEquals(MediaTypeUtil.ALL, types.get(0));
+        assertEquals(MediaTypeUtil.TEXT_PLAIN, types.get(1));
     }
 
     @Test
     void testSortBySpecificityAndQuality() {
         final List<MediaType> types = new LinkedList<>();
-        types.add(MediaTypes.ALL);
-        types.add(MediaTypes.of("text"));
-        types.add(MediaTypes.TEXT_HTML);
+        types.add(MediaTypeUtil.ALL);
+        types.add(MediaTypeUtil.of("text"));
+        types.add(MediaTypeUtil.TEXT_HTML);
 
-        MediaTypes.sortBySpecificityAndQuality(types);
-        assertEquals(MediaTypes.TEXT_HTML, types.get(0));
-        assertEquals(MediaTypes.of("text"), types.get(1));
-        assertEquals(MediaTypes.ALL, types.get(2));
+        MediaTypeUtil.sortBySpecificityAndQuality(types);
+        assertEquals(MediaTypeUtil.TEXT_HTML, types.get(0));
+        assertEquals(MediaTypeUtil.of("text"), types.get(1));
+        assertEquals(MediaTypeUtil.ALL, types.get(2));
     }
 
     @Test
     void testCopyQualityValue() {
-        final MediaType type0 = MediaTypes.parseMediaType("text/plain");
-        assertSame(type0, MediaTypes.copyQualityValue(MediaTypes.ALL, type0));
+        final MediaType type0 = MediaTypeUtil.parseMediaType("text/plain");
+        assertSame(type0, MediaTypeUtil.copyQualityValue(MediaTypeUtil.ALL, type0));
 
-        final MediaType type1 = MediaTypes.parseMediaType("text/plain;a=b;c=d;m=n");
-        final MediaType type2 = MediaTypes.copyQualityValue(MediaTypes.parseMediaType("*/*;a=xxx;q=11"), type1);
+        final MediaType type1 = MediaTypeUtil.parseMediaType("text/plain;a=b;c=d;m=n");
+        final MediaType type2 = MediaTypeUtil.copyQualityValue(MediaTypeUtil.parseMediaType("*/*;a=xxx;q=11"), type1);
         assertNotSame(type1, type2);
         assertEquals("text", type2.type());
         assertEquals("plain", type2.subtype());

@@ -17,6 +17,7 @@ package io.esastack.commons.net.buffer;
 
 import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
+import io.esastack.commons.net.internal.buffer.BufferProvider;
 
 import java.util.List;
 
@@ -117,7 +118,7 @@ public final class BufferUtil {
     }
 
     private static void checkStatus() {
-        Checks.checkArg(PROVIDER != null, "provider is null");
+        Checks.checkNotNull(PROVIDER, "provider");
     }
 
     private BufferUtil() {

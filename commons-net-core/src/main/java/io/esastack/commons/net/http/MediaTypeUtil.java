@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static esa.commons.http.MimeType.parseMimeType;
 import static esa.commons.http.MimeType.parseMimeTypes;
 
-public class MediaTypes {
+public class MediaTypeUtil {
 
     /**
      * Media type for all
@@ -179,7 +179,7 @@ public class MediaTypes {
     }
 
     public static List<MediaTypeImpl> valuesOf(String mediaTypes) {
-        return parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypes.valueOf(s));
+        return parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypeUtil.valueOf(s));
     }
 
     public static void valuesOf(String mediaTypes, List<MediaType> target) {
@@ -188,7 +188,7 @@ public class MediaTypes {
         }
 
         List<MediaTypeImpl> mimes = new LinkedList<>();
-        parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) (MediaTypes.valueOf(s)), mimes);
+        parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) (MediaTypeUtil.valueOf(s)), mimes);
 
         target.addAll(mimes);
     }
@@ -256,6 +256,12 @@ public class MediaTypes {
         return Double.compare(quality2, quality1);
     };
 
+    private static final MimeType.SpecificityComparator<MimeType> MIME_TYPE_SPECIFICITY_COMPARATOR
+            = new MimeType.SpecificityComparator<>();
+
+    public static final Comparator<MediaType> SPECIFICITY_COMPARATOR =
+            (o1, o2) -> MIME_TYPE_SPECIFICITY_COMPARATOR.compare(convert(o1), convert(o2));
+
     private static MimeType convert(MediaType type) {
         if (type == null) {
             return null;
@@ -266,12 +272,6 @@ public class MediaTypes {
 
         return MimeType.of(type.type(), type.subtype(), type.params());
     }
-
-    private static final MimeType.SpecificityComparator<MimeType> MIME_TYPE_SPECIFICITY_COMPARATOR
-            = new MimeType.SpecificityComparator<>();
-
-    public static final Comparator<MediaType> SPECIFICITY_COMPARATOR =
-            (o1, o2) -> MIME_TYPE_SPECIFICITY_COMPARATOR.compare(convert(o1), convert(o2));
 
     private static class ParseResult {
         final MediaType r;

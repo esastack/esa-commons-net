@@ -17,6 +17,7 @@ package io.esastack.commons.net.http;
 
 import esa.commons.Checks;
 import esa.commons.spi.SpiLoader;
+import io.esastack.commons.net.internal.http.CookieProvider;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public final class CookieUtil {
     }
 
     private static void checkStatus() {
-        Checks.checkArg(PROVIDER != null, "provider is null");
+        Checks.checkNotNull(PROVIDER, "provider");
     }
 
     private CookieUtil() {

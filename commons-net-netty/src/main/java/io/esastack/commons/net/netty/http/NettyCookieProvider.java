@@ -18,7 +18,7 @@ package io.esastack.commons.net.netty.http;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.http.Cookie;
-import io.esastack.commons.net.http.CookieProvider;
+import io.esastack.commons.net.internal.http.CookieProvider;
 
 import java.util.Optional;
 
