@@ -81,7 +81,7 @@ public class MediaTypeImpl extends MimeType implements MediaType {
 
     @Override
     public double qValue() {
-        String qualityFactor = getParameter(MediaTypes.Q_VALUE);
+        String qualityFactor = getParameter(MediaTypeUtil.Q_VALUE);
         return (qualityFactor != null ? Double.parseDouble(StringUtils.unquote(qualityFactor)) : 1D);
     }
 

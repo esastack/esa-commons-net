@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.buffer;
+package io.esastack.commons.net.internal.buffer;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
+import io.esastack.commons.net.buffer.Buffer;
 
 import java.util.Optional;
 

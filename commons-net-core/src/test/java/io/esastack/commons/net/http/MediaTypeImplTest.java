@@ -30,28 +30,28 @@ class MediaTypeImplTest {
 
     @Test
     void testIncludes() {
-        assertTrue(MediaTypes.ALL.includes(MediaTypes.TEXT_HTML));
-        assertFalse(MediaTypes.TEXT_HTML.includes(MediaTypes.ALL));
+        assertTrue(MediaTypeUtil.ALL.includes(MediaTypeUtil.TEXT_HTML));
+        assertFalse(MediaTypeUtil.TEXT_HTML.includes(MediaTypeUtil.ALL));
 
-        assertTrue(MediaTypes.of("text").includes(MediaTypes.TEXT_HTML));
-        assertFalse(MediaTypes.TEXT_HTML.includes(MediaTypes.of("text")));
+        assertTrue(MediaTypeUtil.of("text").includes(MediaTypeUtil.TEXT_HTML));
+        assertFalse(MediaTypeUtil.TEXT_HTML.includes(MediaTypeUtil.of("text")));
     }
 
     @Test
     void testIsCompatibleWith() {
-        assertTrue(MediaTypes.ALL.isCompatibleWith(MediaTypes.TEXT_HTML));
-        assertTrue(MediaTypes.TEXT_HTML.isCompatibleWith(MediaTypes.ALL));
+        assertTrue(MediaTypeUtil.ALL.isCompatibleWith(MediaTypeUtil.TEXT_HTML));
+        assertTrue(MediaTypeUtil.TEXT_HTML.isCompatibleWith(MediaTypeUtil.ALL));
 
-        assertFalse(MediaTypes.TEXT_HTML.isCompatibleWith(MediaTypes.TEXT_PLAIN));
-        assertFalse(MediaTypes.TEXT_PLAIN.isCompatibleWith(MediaTypes.TEXT_HTML));
+        assertFalse(MediaTypeUtil.TEXT_HTML.isCompatibleWith(MediaTypeUtil.TEXT_PLAIN));
+        assertFalse(MediaTypeUtil.TEXT_PLAIN.isCompatibleWith(MediaTypeUtil.TEXT_HTML));
     }
 
     @Test
     void testQValue() {
-        final MediaType type0 = MediaTypes.ALL;
+        final MediaType type0 = MediaTypeUtil.ALL;
         assertEquals(1L, type0.qValue());
 
-        final MediaType type1 = MediaTypes.of("text", "plain", Collections.singletonMap("q", "10"));
+        final MediaType type1 = MediaTypeUtil.of("text", "plain", Collections.singletonMap("q", "10"));
         assertEquals(10L, type1.qValue());
     }
 
@@ -81,7 +81,7 @@ class MediaTypeImplTest {
         assertEquals("a", type0.type());
         assertFalse(type0.isWildcardType());
 
-        final MediaTypeImpl type1 = (MediaTypeImpl) MediaTypes.ALL;
+        final MediaTypeImpl type1 = (MediaTypeImpl) MediaTypeUtil.ALL;
         assertEquals("*", type1.type());
         assertTrue(type1.isWildcardType());
     }

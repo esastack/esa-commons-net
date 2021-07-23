@@ -18,7 +18,7 @@ package io.esastack.commons.net.netty.buffer;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.buffer.BufferProvider;
+import io.esastack.commons.net.internal.buffer.BufferProvider;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 

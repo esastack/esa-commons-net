@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.esastack.commons.net.http;
+package io.esastack.commons.net.internal.http;
 
 import esa.commons.annotation.Internal;
 import esa.commons.spi.SPI;
+import io.esastack.commons.net.http.Cookie;
 
 import java.util.Optional;
 
