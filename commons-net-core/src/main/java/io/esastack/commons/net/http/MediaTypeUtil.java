@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static esa.commons.http.MimeType.parseMimeType;
 import static esa.commons.http.MimeType.parseMimeTypes;
 
-public class MediaTypeUtil {
+public final class MediaTypeUtil {
 
     /**
      * Media type for all
@@ -151,7 +151,6 @@ public class MediaTypeUtil {
      * Parses media type string to instance of {@link MediaType}.
      *
      * @param mediaType media type string
-     *
      * @return parsed
      */
     public static MediaType valueOf(String mediaType) {
@@ -202,7 +201,6 @@ public class MediaTypeUtil {
      * separated by ',', eg: 'application/json,text/plain'.
      *
      * @param mediaTypes mediaTypes
-     *
      * @return parsed
      */
     public static List<MediaTypeImpl> parseMediaTypes(String mediaTypes) {
@@ -230,14 +228,6 @@ public class MediaTypeUtil {
 
     public static MediaType of(String type, String subtype, Map<String, String> parameters) {
         return new MediaTypeImpl(type, subtype, parameters);
-    }
-
-    public static MediaType of(MimeType other, Charset charset) {
-        return new MediaTypeImpl(other, charset);
-    }
-
-    public static MediaType of(MimeType other, Map<String, String> parameters) {
-        return new MediaTypeImpl(other, parameters);
     }
 
     public static MediaType copyQualityValue(MediaType from, MediaType to) {
@@ -291,5 +281,7 @@ public class MediaTypeUtil {
         }
     }
 
+    private MediaTypeUtil() {
+    }
 }
 

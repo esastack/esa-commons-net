@@ -21,7 +21,7 @@ import esa.commons.http.MimeType;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public class MediaTypeImpl extends MimeType implements MediaType {
+class MediaTypeImpl extends MimeType implements MediaType {
 
     MediaTypeImpl(String type) {
         super(type);
@@ -33,14 +33,6 @@ public class MediaTypeImpl extends MimeType implements MediaType {
 
     MediaTypeImpl(String type, String subtype, Charset charset) {
         super(type, subtype, charset);
-    }
-
-    MediaTypeImpl(MimeType other, Charset charset) {
-        super(other.type(), other.subtype(), charset);
-    }
-
-    MediaTypeImpl(MimeType other, Map<String, String> parameters) {
-        super(other.type(), other.subtype(), parameters);
     }
 
     MediaTypeImpl(String type, String subtype, Map<String, String> parameters) {
