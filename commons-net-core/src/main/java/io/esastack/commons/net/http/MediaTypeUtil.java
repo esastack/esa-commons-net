@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static esa.commons.http.MimeType.parseMimeType;
 import static esa.commons.http.MimeType.parseMimeTypes;
 
-public class MediaTypeUtil {
+public final class MediaTypeUtil {
 
     /**
      * Media type for all
@@ -281,5 +281,7 @@ public class MediaTypeUtil {
         }
     }
 
+    private MediaTypeUtil() {
+    }
 }
 
