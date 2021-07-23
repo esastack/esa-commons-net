@@ -113,6 +113,7 @@
         <junit.version>5.4.2</junit.version>
         <mockito.version>3.3.3</mockito.version>
         <commons.version>0.1.1</commons.version>
+        <commons.build.version>1.0</commons.build.version>
     </properties>
 
     <dependencies>
@@ -167,7 +168,7 @@
                             <id>check-style</id>
                             <configuration>
                                 <skip>false</skip>
-                                <configLocation>esa/commons/checkstyle.xml</configLocation>
+                                <configLocation>io/esastack/commons/checkstyle.xml</configLocation>
                                 <encoding>${encoding}</encoding>
                                 <consoleOutput>true</consoleOutput>
                                 <logViolationsToConsole>true</logViolationsToConsole>
@@ -194,7 +195,7 @@
                         <dependency>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>commons-build</artifactId>
-                            <version>${commons.version}</version>
+                            <version>${commons.build.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
