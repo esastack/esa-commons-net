@@ -24,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,6 +56,8 @@ class NettyCookieProviderTest {
         assertTrue(cookie2.isPresent());
         assertEquals("a", cookie2.get().name());
         assertEquals("b", cookie2.get().value());
+
+        assertSame(cookie2.get(), provider.wrap(cookie2.get()).orElse(null));
     }
 
     @Test

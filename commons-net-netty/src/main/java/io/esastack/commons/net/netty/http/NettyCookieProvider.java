@@ -35,6 +35,8 @@ public class NettyCookieProvider implements CookieProvider {
     public Optional<Cookie> wrap(Object cookie) {
         if (cookie instanceof io.netty.handler.codec.http.cookie.Cookie) {
             return Optional.of(new CookieImpl((io.netty.handler.codec.http.cookie.Cookie) cookie));
+        } else if (cookie instanceof Cookie) {
+            return Optional.of((Cookie) cookie);
         } else {
             return Optional.empty();
         }

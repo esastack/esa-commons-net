@@ -57,6 +57,8 @@ public class NettyBufferProvider implements BufferProvider {
     public Optional<Buffer> wrap(Object buffer) {
         if (buffer instanceof ByteBuf) {
             return Optional.of(new BufferImpl((ByteBuf) buffer));
+        } else if (buffer instanceof Buffer) {
+            return Optional.of((Buffer) buffer);
         } else {
             return Optional.empty();
         }
