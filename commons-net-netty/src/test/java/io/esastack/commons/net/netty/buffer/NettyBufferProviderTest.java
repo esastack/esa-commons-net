@@ -82,6 +82,8 @@ class NettyBufferProviderTest {
         final Optional<Buffer> buffer = provider.wrap(buf);
         assertTrue(buffer.isPresent());
         assertSame(buf, provider.unwrap(buffer.get()).orElse(null));
+
+        assertSame(buffer.get(), provider.wrap(buffer.get()).orElse(null));
     }
 
     @Test
