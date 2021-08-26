@@ -177,8 +177,10 @@ public final class MediaTypeUtil {
         }
     }
 
-    public static List<MediaTypeImpl> valuesOf(String mediaTypes) {
-        return parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypeUtil.valueOf(s));
+    public static List<MediaType> valuesOf(String mediaTypes) {
+        List<MediaType> parsed = new LinkedList<>();
+        parsed.addAll(parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypeUtil.valueOf(s)));
+        return parsed;
     }
 
     public static void valuesOf(String mediaTypes, List<MediaType> target) {
@@ -203,8 +205,8 @@ public final class MediaTypeUtil {
      * @param mediaTypes mediaTypes
      * @return parsed
      */
-    public static List<MediaTypeImpl> parseMediaTypes(String mediaTypes) {
-        return parseMimeTypes(mediaTypes, GENERATOR);
+    public static List<MediaType> parseMediaTypes(String mediaTypes) {
+        return new LinkedList<>(parseMimeTypes(mediaTypes, GENERATOR));
     }
 
     public static void sortBySpecificityAndQuality(List<MediaType> mediaTypes) {
