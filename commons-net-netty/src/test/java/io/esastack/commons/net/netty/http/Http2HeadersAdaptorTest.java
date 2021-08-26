@@ -15,6 +15,7 @@
  */
 package io.esastack.commons.net.netty.http;
 
+import io.netty.handler.codec.http2.DefaultHttp2Headers;
 import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2Headers;
 import io.netty.util.AsciiString;
@@ -58,6 +59,13 @@ class Http2HeadersAdaptorTest {
         final Http2HeadersAdaptor adaptor = new Http2HeadersAdaptor(false);
         adaptor.set("A", "foo");
         assertThrows(NullPointerException.class, () -> adaptor.set("foo", null));
+    }
+
+    @Test
+    void testUnwrap() {
+        final Http2Headers underlying = new DefaultHttp2Headers();
+        final Http2HeadersAdaptor adaptor = new Http2HeadersAdaptor(underlying);
+        assertSame(underlying, adaptor.unwrap());
     }
 
     @Test

@@ -455,6 +455,10 @@ public class Http1HeadersAdaptor implements HttpHeaders {
         return underlying.iterator();
     }
 
+    public io.netty.handler.codec.http.HttpHeaders unwrap() {
+        return this.underlying;
+    }
+
     @Override
     public String toString() {
         return HeadersUtils.toString(getClass(), iteratorCharSequence(), size());
