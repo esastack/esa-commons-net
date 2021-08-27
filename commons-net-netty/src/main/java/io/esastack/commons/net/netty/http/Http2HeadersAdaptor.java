@@ -486,6 +486,10 @@ public class Http2HeadersAdaptor implements HttpHeaders {
         };
     }
 
+    public Http2Headers unwrap() {
+        return underlying;
+    }
+
     @Override
     public String toString() {
         return HeadersUtils.toString(getClass(), iteratorCharSequence(), size());

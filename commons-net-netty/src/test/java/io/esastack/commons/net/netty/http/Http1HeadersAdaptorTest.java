@@ -15,6 +15,7 @@
  */
 package io.esastack.commons.net.netty.http;
 
+import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
@@ -56,6 +57,13 @@ class Http1HeadersAdaptorTest {
         final Http1HeadersAdaptor adaptor = new Http1HeadersAdaptor(false);
         adaptor.set("\t", "foo");
         assertThrows(NullPointerException.class, () -> adaptor.set("foo", null));
+    }
+
+    @Test
+    void testUnwrap() {
+        final HttpHeaders underlying = new DefaultHttpHeaders();
+        final Http1HeadersAdaptor adaptor = new Http1HeadersAdaptor(underlying);
+        assertSame(underlying, adaptor.unwrap());
     }
 
     @Test
