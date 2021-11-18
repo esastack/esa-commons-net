@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.cookie.ClientCookieEncoder;
 import io.netty.handler.codec.http.cookie.DefaultCookie;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -121,6 +122,19 @@ public class CookieImpl implements Cookie {
         } else {
             return ClientCookieEncoder.STRICT.encode(cookie);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return cookie.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CookieImpl cookie1 = (CookieImpl) o;
+        return Objects.equals(cookie, cookie1.cookie);
     }
 
     Optional<Object> unwrap() {
