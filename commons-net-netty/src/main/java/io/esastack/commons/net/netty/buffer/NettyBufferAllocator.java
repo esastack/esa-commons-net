@@ -15,34 +15,36 @@
  */
 package io.esastack.commons.net.netty.buffer;
 
+import esa.commons.Checks;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.internal.buffer.BufferProvider;
-import io.netty.buffer.ByteBuf;
-
-import java.util.Optional;
+import io.esastack.commons.net.buffer.BufferAllocator;
+import io.netty.buffer.ByteBufAllocator;
 
 @Internal
 @Feature(order = -1000)
-public class NettyBufferProvider implements BufferProvider {
+public class NettyBufferAllocator implements BufferAllocator {
 
-    @Override
-    public Optional<Buffer> wrap(Object buffer) {
-        if (buffer instanceof ByteBuf) {
-            return Optional.of(new BufferImpl((ByteBuf) buffer));
-        } else {
-            return BufferProvider.super.wrap(buffer);
-        }
+    private final ByteBufAllocator alloc;
+
+    public NettyBufferAllocator(ByteBufAllocator alloc) {
+        Checks.checkNotNull(alloc, "alloc");
+        this.alloc = alloc;
     }
 
     @Override
-    public Optional<Object> unwrap(Buffer buffer) {
-        if (buffer instanceof BufferImpl) {
-            return ((BufferImpl) buffer).unwrap();
-        } else {
-            return BufferProvider.super.unwrap(buffer);
-        }
+    public Buffer empty() {
+        return BufferImpl.EMPTY_BUFFER;
+    }
+
+    @Override
+    public Buffer buffer() {
+        return new BufferImpl(alloc.buffer());
+    }
+
+    @Override
+    public Buffer buffer(int initialCapacity) {
+        return new BufferImpl(alloc.buffer(initialCapacity));
     }
 }
-

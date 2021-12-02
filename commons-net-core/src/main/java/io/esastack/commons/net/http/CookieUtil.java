@@ -28,32 +28,29 @@ public final class CookieUtil {
      *
      * @param name  name
      * @param value value
-     * @return  cookie
+     * @return cookie
      */
     public static Cookie cookie(String name, String value) {
-        checkStatus();
         return PROVIDER.create(name, value);
     }
 
     /**
      * Wraps the given {@code cookie} to a {@link Cookie}.
      *
-     * @param cookie    cookie
-     * @return  cookie
+     * @param cookie cookie
+     * @return cookie
      */
     public static Cookie wrap(Object cookie) {
-        checkStatus();
         return PROVIDER.wrap(cookie).orElse(null);
     }
 
     /**
      * Unwraps the given {@code cookie}.
      *
-     * @param cookie    cookie
-     * @return  object, which may be null.
+     * @param cookie cookie
+     * @return object, which may be null.
      */
     public static Object unwrap(Cookie cookie) {
-        checkStatus();
         return PROVIDER.unwrap(cookie).orElse(null);
     }
 
@@ -61,15 +58,9 @@ public final class CookieUtil {
 
     static {
         List<CookieProvider> providers = SpiLoader.cached(CookieProvider.class).getAll();
-        if (providers.isEmpty()) {
-            PROVIDER = null;
-        } else {
-            PROVIDER = providers.get(0);
-        }
-    }
-
-    private static void checkStatus() {
-        Checks.checkNotNull(PROVIDER, "provider");
+        Checks.checkNotEmptyState(providers,
+                "Could not find any implementation of '" + CookieProvider.class.getName() + "'");
+        PROVIDER = providers.iterator().next();
     }
 
     private CookieUtil() {

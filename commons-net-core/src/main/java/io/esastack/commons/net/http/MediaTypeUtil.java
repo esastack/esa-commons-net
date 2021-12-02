@@ -20,7 +20,6 @@ import esa.commons.StringUtils;
 import esa.commons.function.Function3;
 import esa.commons.http.MimeType;
 
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -33,112 +32,6 @@ import static esa.commons.http.MimeType.parseMimeType;
 import static esa.commons.http.MimeType.parseMimeTypes;
 
 public final class MediaTypeUtil {
-
-    /**
-     * Media type for all
-     */
-    public static final MediaType ALL = of("*", "*");
-
-    /**
-     * String media type for all
-     */
-    public static final String ALL_VALUE = "*/*";
-
-    /**
-     * Media type for {@code application/x-www-form-urlencoded}.
-     */
-    public static final MediaType APPLICATION_FORM_URLENCODED
-            = of("application", "x-www-form-urlencoded");
-
-    /**
-     * String media type for {@code application/x-www-form-urlencoded}.
-     */
-    public static final String APPLICATION_FORM_URLENCODED_VALUE
-            = "application/x-www-form-urlencoded";
-
-    /**
-     * Media type for {@code application/json}.
-     */
-    public static final MediaType APPLICATION_JSON
-            = of("application", "json");
-
-    /**
-     * String media type for {@code application/json}.
-     */
-    public static final String APPLICATION_JSON_VALUE
-            = "application/json";
-
-    /**
-     * Media type for {@code application/json;charset=utf-8}.
-     */
-    public static final MediaType APPLICATION_JSON_UTF8
-            = of("application", "json", StandardCharsets.UTF_8);
-
-    /**
-     * String media type for {@code application/json;charset=utf-8}.
-     */
-    public static final String APPLICATION_JSON_UTF8_VALUE
-            = "application/json;charset=UTF-8";
-
-    /**
-     * Media type for {@code application/octet-stream}.
-     */
-    public static final MediaType APPLICATION_OCTET_STREAM
-            = of("application", "octet-stream");
-
-    /**
-     * String media type for {@code application/octet-stream}.
-     */
-    public static final String APPLICATION_OCTET_STREAM_VALUE
-            = "application/octet-stream";
-
-    /**
-     * Media type for {@code application/xml}.
-     */
-    public static final MediaType APPLICATION_XML
-            = of("application", "xml");
-
-    /**
-     * String media type for {@code application/xml}.
-     */
-    public static final String APPLICATION_XML_VALUE
-            = "application/xml";
-
-    /**
-     * Media type for {@code multipart/form-data}.
-     */
-    public static final MediaType MULTIPART_FORM_DATA
-            = of("multipart", "form-data");
-
-    /**
-     * String media type for {@code multipart/form-data}.
-     */
-    public static final String MULTIPART_FORM_DATA_VALUE
-            = "multipart/form-data";
-
-    /**
-     * Media type for {@code text/html}.
-     */
-    public static final MediaType TEXT_HTML
-            = of("text", "html");
-
-    /**
-     * String media type for {@code text/html}.
-     */
-    public static final String TEXT_HTML_VALUE
-            = "text/html";
-
-    /**
-     * Media type for {@code text/plain}.
-     */
-    public static final MediaType TEXT_PLAIN
-            = of("text", "plain");
-
-    /**
-     * String media type for {@code text/plain}.
-     */
-    public static final String TEXT_PLAIN_VALUE
-            = "text/plain";
 
     static final String Q_VALUE = "q";
 
@@ -153,12 +46,12 @@ public final class MediaTypeUtil {
      * @param mediaType media type string
      * @return parsed
      */
-    public static MediaType valueOf(String mediaType) {
+    public static MediaType parseMediaType(String mediaType) {
         Checks.checkNotEmptyArg(mediaType, "mediaType");
         ParseResult cached = CACHE.get(mediaType);
         if (cached == null) {
             try {
-                cached = ParseResult.ok(parseMediaType(mediaType));
+                cached = ParseResult.ok(parseMediaType0(mediaType));
             } catch (Exception e) {
                 cached = ParseResult.error(e);
             }
@@ -177,36 +70,25 @@ public final class MediaTypeUtil {
         }
     }
 
-    public static List<MediaType> valuesOf(String mediaTypes) {
+    public static List<MediaType> parseMediaTypes(String mediaTypes) {
         List<MediaType> parsed = new LinkedList<>();
-        parsed.addAll(parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypeUtil.valueOf(s)));
+        parsed.addAll(parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) MediaTypeUtil.parseMediaType(s)));
         return parsed;
     }
 
-    public static void valuesOf(String mediaTypes, List<MediaType> target) {
+    public static void parseMediaTypes(String mediaTypes, List<MediaType> target) {
         if (target == null) {
             return;
         }
 
         List<MediaTypeImpl> mimes = new LinkedList<>();
-        parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) (MediaTypeUtil.valueOf(s)), mimes);
+        parseMimeTypes(mediaTypes, s -> (MediaTypeImpl) (MediaTypeUtil.parseMediaType(s)), mimes);
 
         target.addAll(mimes);
     }
 
-    public static MediaType parseMediaType(String mediaType) {
+    private static MediaType parseMediaType0(String mediaType) {
         return parseMimeType(mediaType, GENERATOR);
-    }
-
-    /**
-     * Parses media type string to a list of {@link MediaType}s. The given value of media type string should be
-     * separated by ',', eg: 'application/json,text/plain'.
-     *
-     * @param mediaTypes mediaTypes
-     * @return parsed
-     */
-    public static List<MediaType> parseMediaTypes(String mediaTypes) {
-        return new LinkedList<>(parseMimeTypes(mediaTypes, GENERATOR));
     }
 
     public static void sortBySpecificityAndQuality(List<MediaType> mediaTypes) {
@@ -216,22 +98,6 @@ public final class MediaTypeUtil {
         }
     }
 
-    public static MediaType of(String type) {
-        return new MediaTypeImpl(type);
-    }
-
-    public static MediaType of(String type, String subtype) {
-        return new MediaTypeImpl(type, subtype);
-    }
-
-    public static MediaType of(String type, String subtype, Charset charset) {
-        return new MediaTypeImpl(type, subtype, charset);
-    }
-
-    public static MediaType of(String type, String subtype, Map<String, String> parameters) {
-        return new MediaTypeImpl(type, subtype, parameters);
-    }
-
     public static MediaType copyQualityValue(MediaType from, MediaType to) {
         String qValue = from.param(Q_VALUE);
         if (StringUtils.isEmpty(qValue)) {
@@ -239,7 +105,7 @@ public final class MediaTypeUtil {
         }
         Map<String, String> params = new LinkedHashMap<>(to.params());
         params.put(Q_VALUE, qValue);
-        return of(to.type(), to.subtype(), params);
+        return new MediaTypeImpl(to.type(), to.subtype(), params);
     }
 
     public static final Comparator<MediaType> QUALITY_VALUE_COMPARATOR = (mediaType1, mediaType2) -> {

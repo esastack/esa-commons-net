@@ -18,7 +18,6 @@ package io.esastack.commons.net.http;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,17 +34,17 @@ class MediaTypeUtilTest {
 
     @Test
     void testOf() {
-        final MediaType type0 = MediaTypeUtil.of("application");
+        final MediaType type0 = MediaType.create("application");
         assertEquals("application", type0.type());
         assertEquals("*", type0.subtype());
         assertTrue(type0.params().isEmpty());
 
-        final MediaType type1 = MediaTypeUtil.of("application", "jsonp");
+        final MediaType type1 = MediaType.create("application", "jsonp");
         assertEquals("application", type1.type());
         assertEquals("jsonp", type1.subtype());
         assertTrue(type1.params().isEmpty());
 
-        final MediaType type2 = MediaTypeUtil.of("text", "plain", StandardCharsets.UTF_8);
+        final MediaType type2 = MediaType.builder("text", "plain").charset(StandardCharsets.UTF_8).build();
         assertEquals("text", type2.type());
         assertEquals("plain", type2.subtype());
         assertEquals(1, type2.params().size());
@@ -54,7 +53,7 @@ class MediaTypeUtilTest {
         final Map<String, String> params = new LinkedHashMap<>(1);
         params.put("a", "b");
         params.put("x", "y");
-        final MediaType type3 = MediaTypeUtil.of("*", "*", params);
+        final MediaType type3 = MediaType.builder("*", "*").addParams(params).build();
         assertEquals("*", type3.type());
         assertEquals("*", type3.subtype());
         assertEquals(2, type3.params().size());
@@ -64,13 +63,13 @@ class MediaTypeUtilTest {
 
     @Test
     void testValueOf() {
-        final MediaType type0 = MediaTypeUtil.valueOf("application/json;charset=utf-8");
-        assertEquals(MediaTypeUtil.APPLICATION_JSON_UTF8, type0);
-        assertThrows(IllegalArgumentException.class, () -> MediaTypeUtil.valueOf("xx,"));
+        final MediaType type0 = MediaTypeUtil.parseMediaType("application/json;charset=utf-8");
+        assertEquals(MediaType.APPLICATION_JSON_UTF8, type0);
+        assertThrows(IllegalArgumentException.class, () -> MediaTypeUtil.parseMediaType("xx,"));
 
         final List<MediaType> types1 = new LinkedList<>(MediaTypeUtil
-                .valuesOf("application/json, text/plain;a=b;c=d"));
-        assertEquals(MediaTypeUtil.APPLICATION_JSON, types1.get(0));
+                .parseMediaTypes("application/json, text/plain;a=b;c=d"));
+        assertEquals(MediaType.APPLICATION_JSON, types1.get(0));
         assertEquals("text", types1.get(1).type());
         assertEquals("plain", types1.get(1).subtype());
         assertEquals("b", types1.get(1).param("a"));
@@ -79,14 +78,14 @@ class MediaTypeUtilTest {
 
     @Test
     void testValuesOf() {
-        assertDoesNotThrow(() -> MediaTypeUtil.valuesOf(null, null));
+        assertDoesNotThrow(() -> MediaTypeUtil.parseMediaTypes(null, null));
         final List<MediaType> target = new LinkedList<>();
 
-        MediaTypeUtil.valuesOf("", target);
+        MediaTypeUtil.parseMediaTypes("", target);
         assertTrue(target.isEmpty());
 
-        MediaTypeUtil.valuesOf("application/json, text/plain;a=b;c=d", target);
-        assertEquals(MediaTypeUtil.APPLICATION_JSON, target.get(0));
+        MediaTypeUtil.parseMediaTypes("application/json, text/plain;a=b;c=d", target);
+        assertEquals(MediaType.APPLICATION_JSON, target.get(0));
         assertEquals("text", target.get(1).type());
         assertEquals("plain", target.get(1).subtype());
         assertEquals("b", target.get(1).param("a"));
@@ -109,25 +108,27 @@ class MediaTypeUtilTest {
 
         final List<MediaType> types = new LinkedList<>(MediaTypeUtil.parseMediaTypes("*/*, text/plain"));
         assertEquals(2, types.size());
-        assertEquals(MediaTypeUtil.ALL, types.get(0));
-        assertEquals(MediaTypeUtil.TEXT_PLAIN, types.get(1));
+        assertEquals(MediaType.ALL, types.get(0));
+        assertEquals(MediaType.TEXT_PLAIN, types.get(1));
     }
 
     @Test
     void testSortBySpecificityAndQuality() {
         assertThrows(NullPointerException.class, () -> MediaTypeUtil.sortBySpecificityAndQuality(null));
         final List<MediaType> types = new LinkedList<>();
-        final MediaType mediaType0 = MediaTypeUtil.ALL;
+        final MediaType mediaType0 = MediaType.ALL;
         types.add(mediaType0);
         MediaTypeUtil.sortBySpecificityAndQuality(types);
         assertEquals(1, types.size());
 
-        final MediaType mediaType1 = MediaTypeUtil.of("text");
-        final MediaType mediaType2 = MediaTypeUtil.TEXT_HTML;
-        final MediaType mediaType3 = MediaTypeUtil.of("application", "json",
-                Collections.singletonMap(MediaTypeUtil.Q_VALUE, "0.5"));
-        final MediaType mediaType4 = MediaTypeUtil.of("foo", "bar",
-                Collections.singletonMap(MediaTypeUtil.Q_VALUE, "0.7"));
+        final MediaType mediaType1 = MediaType.create("text");
+        final MediaType mediaType2 = MediaType.TEXT_HTML;
+        final MediaType mediaType3 = MediaType.builder("application", "json")
+                .addParam(MediaTypeUtil.Q_VALUE, "0.5")
+                .build();
+        final MediaType mediaType4 = MediaType.builder("foo", "bar")
+                .addParam(MediaTypeUtil.Q_VALUE, "0.7")
+                .build();
 
         MediaTypeUtil.sortBySpecificityAndQuality(types);
         types.add(mediaType1);
@@ -146,7 +147,7 @@ class MediaTypeUtilTest {
     @Test
     void testCopyQualityValue() {
         final MediaType type0 = MediaTypeUtil.parseMediaType("text/plain");
-        assertSame(type0, MediaTypeUtil.copyQualityValue(MediaTypeUtil.ALL, type0));
+        assertSame(type0, MediaTypeUtil.copyQualityValue(MediaType.ALL, type0));
 
         final MediaType type1 = MediaTypeUtil.parseMediaType("text/plain;a=b;c=d;m=n");
         final MediaType type2 = MediaTypeUtil.copyQualityValue(MediaTypeUtil.parseMediaType("*/*;a=xxx;q=11"), type1);

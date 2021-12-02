@@ -23,6 +23,10 @@ import java.nio.charset.UnsupportedCharsetException;
  */
 public interface Buffer {
 
+    static BufferAllocator defaultAlloc() {
+        return BufferAllocator.getDefault();
+    }
+
     /**
      * Gets a byte at the specified absolute {@code index} in this buffer. This method does not modify {@code
      * readerIndex} or {@code writerIndex} of this buffer.
@@ -369,12 +373,19 @@ public interface Buffer {
     Buffer writeFloat(float f);
 
     /**
+     * Transfers this buffer's data to the byte array. This method does not modify {@code readerIndex} or {@code
+     * writerIndex} of this buffer
+     *
+     * @return bytes
+     */
+    byte[] getBytes();
+
+    /**
      * Transfers this buffer's data to the specified destination starting at the specified absolute {@code index}. This
      * method does not modify {@code readerIndex} or {@code writerIndex} of this buffer
      *
      * @param index start position
      * @param dst   destination array
-     *
      * @return byteBuf
      * @throws IndexOutOfBoundsException if the specified {@code index} is less than {@code 0} or if {@code index +
      *                                   dst.length} is greater than {@code this.capacity}
@@ -389,7 +400,6 @@ public interface Buffer {
      * @param dst      destination array
      * @param dstIndex the first index of the destination
      * @param length   the number of bytes to transfer
-     *
      * @return byteBuf
      * @throws IndexOutOfBoundsException if the specified {@code index} is less than {@code 0}, if the specified {@code
      *                                   dstIndex} is less than {@code 0}, if {@code index + length} is greater than
@@ -422,7 +432,6 @@ public interface Buffer {
      *
      * @param index the first index of start
      * @param src   destination array
-     *
      * @throws IndexOutOfBoundsException if the specified {@code index} is less than {@code 0} or if {@code index +
      *                                   src.length} is greater than {@code this.capacity}
      */
@@ -436,7 +445,6 @@ public interface Buffer {
      * @param src      destination array
      * @param srcIndex the first index of the destination
      * @param length   the number of bytes to transfer
-     *
      * @throws IndexOutOfBoundsException if the specified {@code index} is less than {@code 0}, if the specified {@code
      *                                   srcIndex} is less than {@code 0}, if {@code index + length} is greater than
      *                                   {@code this.capacity}, or if {@code srcIndex + length} is greater than {@code
@@ -476,6 +484,20 @@ public interface Buffer {
      * Returns the number of writable bytes which is equal to {@code (this.capacity - this.writerIndex)}.
      */
     int writableBytes();
+
+    /**
+     * Returns the writerIndex of the buffer, measured in bytes.
+     *
+     * @return writerIndex
+     */
+    int writerIndex();
+
+    /**
+     * Returns the readerIndex of the buffer, measured in bytes.
+     *
+     * @return readerIndex
+     */
+    int readerIndex();
 
     /**
      * Sets the {@code readerIndex} and {@code writerIndex} of this buffer to {@code 0}.

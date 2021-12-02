@@ -18,6 +18,7 @@ package io.esastack.commons.net.netty.buffer;
 import esa.commons.Checks;
 import io.esastack.commons.net.buffer.Buffer;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 import java.nio.charset.Charset;
@@ -36,30 +37,6 @@ public class BufferImpl implements Buffer {
     public static final BufferImpl EMPTY_BUFFER = new BufferImpl(Unpooled.EMPTY_BUFFER);
 
     private final io.netty.buffer.ByteBuf underlying;
-
-    public BufferImpl() {
-        this(Unpooled.buffer());
-    }
-
-    public BufferImpl(int initialCapacity) {
-        this(Unpooled.buffer(initialCapacity));
-    }
-
-    public BufferImpl(int initialCapacity, int maxCapacity) {
-        this(Unpooled.buffer(initialCapacity, maxCapacity));
-    }
-
-    public BufferImpl(ByteBufAllocator allocator) {
-        this(allocator.buffer());
-    }
-
-    public BufferImpl(ByteBufAllocator allocator, int initialCapacity) {
-        this(allocator.buffer(initialCapacity));
-    }
-
-    public BufferImpl(ByteBufAllocator allocator, int initialCapacity, int maxCapacity) {
-        this(allocator.buffer(initialCapacity, maxCapacity));
-    }
 
     public BufferImpl(io.netty.buffer.ByteBuf underlying) {
         Checks.checkNotNull(underlying, "underlying");
@@ -265,6 +242,11 @@ public class BufferImpl implements Buffer {
     }
 
     @Override
+    public byte[] getBytes() {
+        return ByteBufUtil.getBytes(underlying);
+    }
+
+    @Override
     public Buffer getBytes(int index, byte[] dst) {
         underlying.getBytes(index, dst);
         return this;
@@ -325,6 +307,16 @@ public class BufferImpl implements Buffer {
     @Override
     public int writableBytes() {
         return underlying.writableBytes();
+    }
+
+    @Override
+    public int writerIndex() {
+        return underlying.writerIndex();
+    }
+
+    @Override
+    public int readerIndex() {
+        return underlying.readerIndex();
     }
 
     @Override

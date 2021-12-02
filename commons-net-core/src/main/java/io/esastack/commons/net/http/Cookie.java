@@ -21,6 +21,13 @@ package io.esastack.commons.net.http;
 public interface Cookie {
 
     /**
+     * Creates a new instance by given {@code name} and {@code value}.
+     */
+    static Cookie cookie(String name, String value) {
+        return CookieUtil.cookie(name, value);
+    }
+
+    /**
      * Constant for undefined MaxAge attribute value.
      */
     long UNDEFINED_MAX_AGE = Long.MIN_VALUE;

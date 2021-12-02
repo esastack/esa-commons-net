@@ -29,52 +29,18 @@ import java.util.Optional;
 public interface BufferProvider {
 
     /**
-     * Creates an {@link Buffer} which is always empty.
-     *
-     * @return  buffer
-     */
-    Buffer empty();
-
-    /**
-     * Creates an {@link Buffer} which is empty when initializing.
-     *
-     * @return  buffer
-     */
-    Buffer buffer();
-
-    /**
-     * Creates an {@link Buffer} with given {@code initialCapacity}.
-     *
-     * @param initialCapacity   initial capacity
-     * @return  buffer
-     */
-    Buffer buffer(int initialCapacity);
-
-    /**
-     * Creates an {@link Buffer} by given {@code src}.
-     *
-     * @param src   src
-     * @return  buffer
-     */
-    Buffer buffer(byte[] src);
-
-    /**
-     * Creates an {@link Buffer} by given {@code src} and {@code off}, {@code len}.
-     *
-     * @param src   src
-     * @param off   off
-     * @param len   len
-     * @return  buffer
-     */
-    Buffer buffer(byte[] src, int off, int len);
-
-    /**
      * Wraps the given {@code buffer} to a {@link Buffer}.
      *
      * @param buffer    buffer
      * @return  buffer
      */
-    Optional<Buffer> wrap(Object buffer);
+    default Optional<Buffer> wrap(Object buffer) {
+        if (buffer instanceof Buffer) {
+            return Optional.of((Buffer) buffer);
+        } else {
+            return Optional.empty();
+        }
+    }
 
     /**
      * Try to unwrap the {@code buffer}.
@@ -82,7 +48,9 @@ public interface BufferProvider {
      * @param buffer    buffer
      * @return  object
      */
-    Optional<Object> unwrap(Buffer buffer);
+    default Optional<Object> unwrap(Buffer buffer) {
+        return Optional.empty();
+    }
 
 }
 

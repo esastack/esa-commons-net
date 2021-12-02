@@ -26,83 +26,25 @@ import java.util.List;
  */
 public final class BufferUtil {
 
-    /**
-     * Obtains a {@link Buffer} which is always empty.
-     *
-     * @return  buffer
-     */
-    public static Buffer empty() {
-        checkStatus();
-        return PROVIDER.empty();
-    }
-
-    /**
-     * Creates a new, empty buffer.
-     *
-     * @return buffer
-     */
-    public static Buffer buffer() {
-        checkStatus();
-        return PROVIDER.buffer();
-    }
-
-    /**
-     * Creates a new, empty buffer using specified initial size.
-     *
-     * @param initialCapacity initial size
-     *
-     * @return buffer
-     */
-    public static Buffer buffer(int initialCapacity) {
-        checkStatus();
-        return PROVIDER.buffer(initialCapacity);
-    }
-
-    /**
-     * Creates a new, buffer wrapping the given bytes.
-     *
-     * @param src src
-     *
-     * @return buffer
-     */
-    public static Buffer buffer(byte[] src) {
-        checkStatus();
-        return PROVIDER.buffer(src);
-    }
-
-    /**
-     * Creates a new, buffer wrapping the given range of bytes.
-     *
-     * @param src src
-     * @param off offset
-     * @param len length
-     *
-     * @return buffer
-     */
-    public static Buffer buffer(byte[] src, int off, int len) {
-        checkStatus();
-        return PROVIDER.buffer(src, off, len);
-    }
+    static final BufferAllocator DEFAULT_ALLOC;
 
     /**
      * Wraps the given {@code buffer} to a {@link Buffer}.
      *
-     * @param buffer    buffer
-     * @return  buffer
+     * @param buffer buffer
+     * @return buffer
      */
     public static Buffer wrap(Object buffer) {
-        checkStatus();
         return PROVIDER.wrap(buffer).orElse(null);
     }
 
     /**
      * Obtains the underlying object of the given {@code buffer}.
      *
-     * @return  if the underlying {@link Object} is present, then it will be returned, otherwise {@code null}
+     * @return if the underlying {@link Object} is present, then it will be returned, otherwise {@code null}
      * will be returned.
      */
     public static Object unwrap(Buffer buffer) {
-        checkStatus();
         return PROVIDER.unwrap(buffer).orElse(null);
     }
 
@@ -110,15 +52,14 @@ public final class BufferUtil {
 
     static {
         List<BufferProvider> providers = SpiLoader.cached(BufferProvider.class).getAll();
-        if (providers.isEmpty()) {
-            PROVIDER = null;
-        } else {
-            PROVIDER = providers.get(0);
-        }
-    }
+        Checks.checkNotEmptyState(providers,
+                "Could not find any implementation of '" + BufferProvider.class.getName() + "'");
+        PROVIDER = providers.iterator().next();
 
-    private static void checkStatus() {
-        Checks.checkNotNull(PROVIDER, "provider");
+        List<BufferAllocator> extensions = SpiLoader.cached(BufferAllocator.class).getAll();
+        Checks.checkNotEmptyState(extensions,
+                "Could not find any implementation of '" + BufferAllocator.class.getName() + "'");
+        DEFAULT_ALLOC = extensions.iterator().next();
     }
 
     private BufferUtil() {
