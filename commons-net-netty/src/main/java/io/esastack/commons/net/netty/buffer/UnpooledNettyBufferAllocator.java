@@ -23,7 +23,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 
 @Internal
 @Feature(order = -1000)
-public class UnpooledNettyBufferAllocator extends NettyBufferAllocator {
+public class UnpooledNettyBufferAllocator extends NettyBufferAllocatorImpl {
 
     public UnpooledNettyBufferAllocator() {
         super(UnpooledByteBufAllocator.DEFAULT);
