@@ -26,13 +26,14 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class NettyBufferAllocatorTest {
+class NettyBufferAllocatorImplTest {
 
     @Test
     void testAlloc() {
-        assertThrows(NullPointerException.class, () -> new NettyBufferAllocator(null));
+        assertThrows(NullPointerException.class, () -> new NettyBufferAllocatorImpl(null));
         final ByteBufAllocator mock = mock(ByteBufAllocator.class);
-        final NettyBufferAllocator alloc = new NettyBufferAllocator(mock);
+        final NettyBufferAllocatorImpl alloc = new NettyBufferAllocatorImpl(mock);
+        assertSame(mock, alloc.alloc());
         assertSame(BufferImpl.EMPTY_BUFFER, alloc.empty());
 
         final ByteBuf buf1 = Unpooled.buffer();
@@ -42,6 +43,25 @@ class NettyBufferAllocatorTest {
 
         assertSame(buf1, ((BufferImpl) alloc.buffer()).unwrap().get());
         assertSame(buf2, ((BufferImpl) alloc.buffer(2)).unwrap().get());
+
+        final ByteBuf buf3 = Unpooled.buffer();
+        final ByteBuf buf4 = Unpooled.buffer();
+        when(mock.heapBuffer()).thenReturn(buf3);
+        when(mock.heapBuffer(anyInt())).thenReturn(buf4);
+        assertSame(buf3, ((BufferImpl) alloc.heapBuffer()).unwrap().get());
+        assertSame(buf4, ((BufferImpl) alloc.heapBuffer(2)).unwrap().get());
+
+        final ByteBuf buf5 = Unpooled.buffer();
+        final ByteBuf buf6 = Unpooled.buffer();
+        when(mock.directBuffer()).thenReturn(buf5);
+        when(mock.directBuffer(anyInt())).thenReturn(buf6);
+        assertSame(buf5, ((BufferImpl) alloc.directBuffer()).unwrap().get());
+        assertSame(buf6, ((BufferImpl) alloc.directBuffer(2)).unwrap().get());
+    }
+
+    @Test
+    void testGetDefault() {
+        assertSame(ByteBufAllocator.DEFAULT, ((NettyBufferAllocatorImpl) NettyBufferAllocator.getDefault()).alloc());
     }
 
 }
