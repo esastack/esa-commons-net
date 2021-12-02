@@ -23,54 +23,11 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NettyBufferProviderTest {
-
-    @Test
-    void testEmpty() {
-        final NettyBufferProvider provider = new NettyBufferProvider();
-        assertSame(Unpooled.EMPTY_BUFFER, provider.unwrap(provider.empty()).orElse(null));
-    }
-
-    @Test
-    void testCreateEmptyBuffer() {
-        final NettyBufferProvider provider = new NettyBufferProvider();
-        final Buffer buffer = provider.buffer();
-
-        final Optional<Object> unwrapped = provider.unwrap(buffer);
-        assertTrue(unwrapped.isPresent());
-        assertTrue(((ByteBuf) unwrapped.get()).hasArray());
-
-        final Buffer buffer1 = provider.buffer(1);
-        final Optional<Object> unwrapped1 = provider.unwrap(buffer1);
-        assertTrue(unwrapped1.isPresent());
-        assertTrue(((ByteBuf) unwrapped1.get()).hasArray());
-        assertEquals(1, buffer1.capacity());
-    }
-
-    @Test
-    void testCreateBufferByBytes() {
-        final NettyBufferProvider provider = new NettyBufferProvider();
-        final byte[] bytes = new byte[4];
-
-        final Buffer buffer = provider.buffer(bytes);
-        final Optional<Object> unwrapped = provider.unwrap(buffer);
-        assertTrue(unwrapped.isPresent());
-        assertTrue(((ByteBuf) unwrapped.get()).hasArray());
-        assertSame(bytes, ((ByteBuf) unwrapped.get()).array());
-        assertEquals(bytes.length, buffer.readableBytes());
-
-        final Buffer buffer1 = provider.buffer(bytes, 1, 2);
-        final Optional<Object> unwrapped1 = provider.unwrap(buffer1);
-        assertTrue(unwrapped1.isPresent());
-        assertTrue(((ByteBuf) unwrapped1.get()).hasArray());
-        assertSame(bytes, ((ByteBuf) unwrapped1.get()).array());
-        assertEquals(2, buffer1.readableBytes());
-    }
 
     @Test
     void testWrap() {
@@ -89,7 +46,7 @@ class NettyBufferProviderTest {
     @Test
     void testUnwrap() {
         final NettyBufferProvider provider = new NettyBufferProvider();
-        final Buffer buffer = provider.buffer("Hello World!".getBytes(StandardCharsets.UTF_8));
+        final Buffer buffer = Buffer.defaultAlloc().buffer("Hello World!".getBytes(StandardCharsets.UTF_8));
         final Optional<Object> unwrapped = provider.unwrap(buffer);
 
         assertTrue(unwrapped.isPresent());

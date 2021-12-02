@@ -18,31 +18,24 @@ package io.esastack.commons.net.netty.buffer;
 import esa.commons.annotation.Internal;
 import esa.commons.spi.Feature;
 import io.esastack.commons.net.buffer.Buffer;
-import io.esastack.commons.net.internal.buffer.BufferProvider;
-import io.netty.buffer.ByteBuf;
-
-import java.util.Optional;
+import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
 
 @Internal
 @Feature(order = -1000)
-public class NettyBufferProvider implements BufferProvider {
+public class UnpooledNettyBufferAllocator extends NettyBufferAllocator {
 
-    @Override
-    public Optional<Buffer> wrap(Object buffer) {
-        if (buffer instanceof ByteBuf) {
-            return Optional.of(new BufferImpl((ByteBuf) buffer));
-        } else {
-            return BufferProvider.super.wrap(buffer);
-        }
+    public UnpooledNettyBufferAllocator() {
+        super(UnpooledByteBufAllocator.DEFAULT);
     }
 
     @Override
-    public Optional<Object> unwrap(Buffer buffer) {
-        if (buffer instanceof BufferImpl) {
-            return ((BufferImpl) buffer).unwrap();
-        } else {
-            return BufferProvider.super.unwrap(buffer);
-        }
+    public Buffer buffer(byte[] src) {
+        return new BufferImpl(Unpooled.wrappedBuffer(src));
+    }
+
+    @Override
+    public Buffer buffer(byte[] src, int off, int len) {
+        return new BufferImpl(Unpooled.wrappedBuffer(src, off, len));
     }
 }
-

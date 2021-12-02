@@ -18,7 +18,6 @@ package io.esastack.commons.net.http;
 import esa.commons.http.MimeType;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,28 +29,28 @@ class MediaTypeImplTest {
 
     @Test
     void testIncludes() {
-        assertTrue(MediaTypeUtil.ALL.includes(MediaTypeUtil.TEXT_HTML));
-        assertFalse(MediaTypeUtil.TEXT_HTML.includes(MediaTypeUtil.ALL));
+        assertTrue(MediaType.ALL.includes(MediaType.TEXT_HTML));
+        assertFalse(MediaType.TEXT_HTML.includes(MediaType.ALL));
 
-        assertTrue(MediaTypeUtil.of("text").includes(MediaTypeUtil.TEXT_HTML));
-        assertFalse(MediaTypeUtil.TEXT_HTML.includes(MediaTypeUtil.of("text")));
+        assertTrue(MediaType.create("text").includes(MediaType.TEXT_HTML));
+        assertFalse(MediaType.TEXT_HTML.includes(MediaType.create("text")));
     }
 
     @Test
     void testIsCompatibleWith() {
-        assertTrue(MediaTypeUtil.ALL.isCompatibleWith(MediaTypeUtil.TEXT_HTML));
-        assertTrue(MediaTypeUtil.TEXT_HTML.isCompatibleWith(MediaTypeUtil.ALL));
+        assertTrue(MediaType.ALL.isCompatibleWith(MediaType.TEXT_HTML));
+        assertTrue(MediaType.TEXT_HTML.isCompatibleWith(MediaType.ALL));
 
-        assertFalse(MediaTypeUtil.TEXT_HTML.isCompatibleWith(MediaTypeUtil.TEXT_PLAIN));
-        assertFalse(MediaTypeUtil.TEXT_PLAIN.isCompatibleWith(MediaTypeUtil.TEXT_HTML));
+        assertFalse(MediaType.TEXT_HTML.isCompatibleWith(MediaType.TEXT_PLAIN));
+        assertFalse(MediaType.TEXT_PLAIN.isCompatibleWith(MediaType.TEXT_HTML));
     }
 
     @Test
     void testQValue() {
-        final MediaType type0 = MediaTypeUtil.ALL;
+        final MediaType type0 = MediaType.ALL;
         assertEquals(1L, type0.qValue());
 
-        final MediaType type1 = MediaTypeUtil.of("text", "plain", Collections.singletonMap("q", "10"));
+        final MediaType type1 = MediaType.builder("text", "plain").addParam("q", "10").build();
         assertEquals(10L, type1.qValue());
     }
 
@@ -81,7 +80,7 @@ class MediaTypeImplTest {
         assertEquals("a", type0.type());
         assertFalse(type0.isWildcardType());
 
-        final MediaTypeImpl type1 = (MediaTypeImpl) MediaTypeUtil.ALL;
+        final MediaTypeImpl type1 = (MediaTypeImpl) MediaType.ALL;
         assertEquals("*", type1.type());
         assertTrue(type1.isWildcardType());
     }

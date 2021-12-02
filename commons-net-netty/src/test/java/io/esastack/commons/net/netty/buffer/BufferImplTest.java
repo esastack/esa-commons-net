@@ -203,6 +203,14 @@ class BufferImplTest {
         assertEquals(1, buffer.writableBytes());
         verify(mock).writableBytes();
 
+        when(mock.readerIndex()).thenReturn(1);
+        assertEquals(1, buffer.readerIndex());
+        verify(mock).readerIndex();
+
+        when(mock.writerIndex()).thenReturn(1);
+        assertEquals(1, buffer.writerIndex());
+        verify(mock).writerIndex();
+
         assertSame(buffer, buffer.clear());
         verify(mock).clear();
 
@@ -234,7 +242,7 @@ class BufferImplTest {
 
     @Test
     void testPrimitiveSetAndGet() {
-        final Buffer buf = new BufferImpl(ByteBufAllocator.DEFAULT);
+        final Buffer buf = new BufferImpl(Unpooled.buffer());
         buf.setByte(0, (byte) '0');
         assertEquals('0', buf.getByte(0));
 
@@ -272,7 +280,7 @@ class BufferImplTest {
 
     @Test
     void testPrimitiveWriteAndRead() {
-        final Buffer buf = new BufferImpl(ByteBufAllocator.DEFAULT);
+        final Buffer buf = new BufferImpl(Unpooled.buffer());
         buf.writeByte((byte) '0');
         assertEquals('0', buf.readByte());
 
@@ -312,7 +320,7 @@ class BufferImplTest {
     void testSetAndGetBytes() {
         final byte[] source = randomByteArray(100);
 
-        Buffer b = from(randomByteArray(100));
+        Buffer b = new BufferImpl(Unpooled.buffer().writeBytes(randomByteArray(100)));
         b.setBytes(0, source);
 
         byte[] dest = new byte[100];
@@ -333,7 +341,7 @@ class BufferImplTest {
         int bytesLen = 100;
         byte[] bytes = randomByteArray(bytesLen);
 
-        Buffer b = from();
+        Buffer b = new BufferImpl(Unpooled.buffer());
         b.writeBytes(bytes);
 
         byte[] dest = new byte[bytesLen];
@@ -356,12 +364,10 @@ class BufferImplTest {
         assertSame(underlying, buf.unwrap().orElse(null));
     }
 
-    private static Buffer from() {
-        return new BufferImpl(Unpooled.EMPTY_BUFFER.alloc());
-    }
-
-    private static Buffer from(byte[] data) {
-        return new BufferImpl(Unpooled.EMPTY_BUFFER.alloc(), data.length).writeBytes(data);
+    @Test
+    void testGetBytes() {
+        final ByteBuf underlying = ByteBufAllocator.DEFAULT.buffer().writeBytes(new byte[] {0, 1, 2});
+        assertArrayEquals(new byte[] {0, 1, 2}, new BufferImpl(underlying).getBytes());
     }
 
     private static byte[] randomByteArray(int length) {
