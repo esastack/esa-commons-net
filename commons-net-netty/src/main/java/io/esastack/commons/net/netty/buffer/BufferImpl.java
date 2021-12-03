@@ -17,7 +17,6 @@ package io.esastack.commons.net.netty.buffer;
 
 import esa.commons.Checks;
 import io.esastack.commons.net.buffer.Buffer;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
@@ -243,7 +242,7 @@ public class BufferImpl implements Buffer {
 
     @Override
     public byte[] getBytes() {
-        return ByteBufUtil.getBytes(underlying);
+        return ByteBufUtil.getBytes(underlying, underlying.readerIndex(), underlying.readableBytes(), false);
     }
 
     @Override
