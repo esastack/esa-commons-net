@@ -366,8 +366,9 @@ class BufferImplTest {
 
     @Test
     void testGetBytes() {
-        final ByteBuf underlying = ByteBufAllocator.DEFAULT.buffer().writeBytes(new byte[] {0, 1, 2});
-        assertArrayEquals(new byte[] {0, 1, 2}, new BufferImpl(underlying).getBytes());
+        final byte[] bytes = new byte[]{0, 1, 2};
+        final ByteBuf underlying = Unpooled.wrappedBuffer(bytes);
+        assertSame(bytes, new BufferImpl(underlying).getBytes());
     }
 
     private static byte[] randomByteArray(int length) {
