@@ -1,0 +1,9 @@
+{
+  "resources":{
+    "includes":[
+      {"pattern":".*/io.esastack.commons.net.buffer.BufferAllocator$"},
+      {"pattern":".*/io.esastack.commons.net.internal.buffer.BufferProvider$"},
+      {"pattern":".*/io.esastack.commons.net.internal.http.CookieProvider$"}
+    ]},
+  "bundles":[]
+}
