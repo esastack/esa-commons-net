@@ -1,0 +1,14 @@
+[
+  {
+    "name":"io.esastack.commons.net.netty.buffer.NettyBufferProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.commons.net.netty.buffer.UnpooledNettyBufferAllocator",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"io.esastack.commons.net.netty.http.NettyCookieProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  }
+]
