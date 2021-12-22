@@ -26,7 +26,7 @@ import io.netty.buffer.UnpooledByteBufAllocator;
 public class UnpooledNettyBufferAllocator extends NettyBufferAllocatorImpl {
 
     public UnpooledNettyBufferAllocator() {
-        super(UnpooledByteBufAllocator.DEFAULT);
+        super(new UnpooledByteBufAllocator(false));
     }
 
     @Override
