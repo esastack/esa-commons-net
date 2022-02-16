@@ -112,7 +112,7 @@
         <netty.version>4.1.56.Final</netty.version>
         <junit.version>5.4.2</junit.version>
         <mockito.version>3.3.3</mockito.version>
-        <commons.version>0.1.1</commons.version>
+        <commons.version>0.2.0</commons.version>
         <commons.build.version>1.0</commons.build.version>
     </properties>
 
